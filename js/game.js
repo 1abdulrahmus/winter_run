@@ -20,11 +20,14 @@ class Level extends Phaser.Scene {
     this.load.image('bg1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/mountain.png');
     this.load.image('bg2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/trees.png');
     this.load.image('bg3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/snowdunes.png');
+    this.load.image('points', '/assets/star.png');
+    this.load.audio('theme', '/assets/theme.mp3');
   }
 
   create() {
-    gameState.active = true
-
+      
+    gameState.active = true;
+      
     gameState.bgColor = this.add.rectangle(0, 0, config.width, config.height, 0x00ffbb).setOrigin(0, 0);
     this.createStars();
     this.createParallaxBackgrounds();
@@ -49,7 +52,32 @@ class Level extends Phaser.Scene {
     this.physics.add.collider(gameState.player, gameState.platforms);
     this.physics.add.collider(gameState.goal, gameState.platforms);
 
+/*  THIS WILL COVER THE POINTS(THE STAR GROUP), WHICH WILL ADD TO THE SCORE
+    //  Finally some stars to collect
+    gameState.points = this.physics.add.group();
+    //  We will enable physics for any star that is created in this group
+    gameState.points.enableBody = true;
+    //  Here we'll create 12 of them evenly spaced apart
+    for (var i = 0; i < 12; i++)
+    {
+        //  Create a star inside of the 'stars' group
+        var point = gameState.points.create(i * 70, 0, 'points');
+        //  Let gravity do its thing
+        point.body.gravity.y = 300;
+        //  This just gives each star a slightly random bounce value
+        point.body.bounce.y = 0.7 + Math.random() * 0.2;
+    }
+    this.physics.add.collider(points, platforms);
+    gameState.points.setCollideWorldBounds(true);
+    this.physics.add.collider(points, platforms);
+    
+    */
+
+      
     gameState.cursors = this.input.keyboard.createCursorKeys();
+    
+    
+    
 
   }
 
@@ -125,7 +153,7 @@ class Level extends Phaser.Scene {
     const bg2_width = gameState.bg2.getBounds().width
     const bg3_width = gameState.bg3.getBounds().width
 
-    gameState.bgColor .setScrollFactor(0);
+    gameState.bgColor.setScrollFactor(0);
     gameState.bg1.setScrollFactor((bg1_width - window_width) / (game_width - window_width));
     gameState.bg2.setScrollFactor((bg2_width - window_width) / (game_width - window_width));
   }
@@ -266,7 +294,7 @@ class Level1 extends Level {
 class Level2 extends Level {
   constructor() {
     super('Level2')
-    this.heights = [5, 4, null, 4, 6, 4, 6, 5, 5];
+    this.heights = [5, 4, null, 4, 6, 4, null, 5, 5];
     this.weather = 'twilight';
   }
 }
@@ -274,7 +302,7 @@ class Level2 extends Level {
 class Level3 extends Level {
   constructor() {
     super('Level3')
-    this.heights = [6, null, 6, 4, 6, 4, 5, null, 4];
+    this.heights = [6, null, 6, 4, null, 4, 5, null, 4];
     this.weather = 'night';
   }
 }
@@ -300,19 +328,80 @@ class Credits extends Phaser.Scene {
   create() {
     gameState.bg3 = this.add.image(0, 0, 'bg3');
     gameState.player = this.add.sprite(config.width / 2, config.height / 2, 'codey_sled');
-    this.add.text( 30, 250, 'Thank you for Playing by Mustafa ', {fill: '#000000', fontSize: '20px'})
+    this.add.text( config.width * .25, config.height * .36, 'Thank you for Playing', {fill: '#000000', fontSize: '20px'})
     this.anims.create({
       key: 'sled',
       frames: this.anims.generateFrameNumbers('codey_sled'),
       frameRate: 10,
       repeat: -1
     })
-		gameState.bg3.angle = 20;
+    gameState.bg3.angle = 20;
     gameState.player.angle = 20;
   }
 
   update() {
     gameState.player.anims.play('sled', true);
+  }
+}
+
+
+class StartScreen extends Phaser.Scene {
+  constructor() {
+    super({ key: 'StartScreen' })
+  }
+
+  preload() {
+    this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/codey.png', { frameWidth: 72, frameHeight: 90})
+    this.load.image('titlebg', '/assets/title_screen_bg.jpg');
+    this.load.image('playbutton', '/assets/playbutton.png');
+    this.load.audio('theme', '/assets/theme.mp3');
+  }
+
+  create() {
+    gameState.titlebg = this.add.image(0, 3, 'titlebg').setOrigin(0, 0);
+    gameState.player = this.add.sprite(config.width / 5, 280, 'codey').setScale(.8);
+    gameState.rect = this.add.rectangle(250, 540, 500, 125, 0xaffada);
+    gameState.button = this.add.image(config.width * .2, config.height * .62, 'playbutton').setScale(.5);
+      
+    this.add.text( config.width *.08, config.height *.22, 'Winter Run ', {fill: '#FFFFFF', fontSize: '70px'});
+    this.add.text( 50, 530, 'Developed by Mustafa Abdulrahman ©', {fill: '#000000', fontSize: '18px'});
+      
+    // use gameState to make audio globally accesible
+    this.sound.add('theme');
+    this.sound.pauseOnBlur = false;
+    this.sound.play('theme');
+      
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('codey', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+      
+    gameState.button.setInteractive();
+      
+    gameState.button.on('pointerover', function () {
+
+        gameState.button.setTint(0xb2ffff);
+
+    });
+
+    gameState.button.on('pointerout', function () {
+
+        gameState.button.clearTint();
+
+    });
+      
+    gameState.button.on('pointerdown', () => {
+        this.scene.stop('StartScreen');
+        this.scene.start('Level1');
+        
+    });
+
+  }
+
+  update() {
+    gameState.player.anims.play('run', true);
   }
 }
 
@@ -327,15 +416,17 @@ const config = {
   height: 600,
   fps: {target: 60},
   backgroundColor: "b9eaff",
+  audio: {
+      disableWebAudio: false
+  },
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
       enableBody: true,
-
     }
   },
-  scene: [Level1, Level2, Level3, Level4, Credits]
+  scene: [StartScreen, Level1, Level2, Level3, Level4, Credits]
 };
 
 const game = new Phaser.Game(config);
