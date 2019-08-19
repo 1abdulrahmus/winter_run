@@ -32,8 +32,15 @@ class Level extends Phaser.Scene {
     this.createStars();
     this.createParallaxBackgrounds();
       
-    this.add.text( 20, 20, 'Winter Run ', {fill: '#FFFFFF', fontSize: '50px'});
-
+    gameState.title = this.add.text( 20, 20, 'Winter Run ', {fill: '#FFFFFF', fontSize: '50px'});
+    
+    // show score 
+    gameState.score = 0;
+    // shows score text+ initializes variable
+    gameState.scoreText = this.add.text(config.width / 15, config.height * .96, 'Score: 0', { fontSize: '20px', fill: '#000000' });
+    gameState.scoreText.setScrollFactor(0);
+      
+      
     gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
     gameState.platforms = this.physics.add.staticGroup();
 
@@ -51,34 +58,44 @@ class Level extends Phaser.Scene {
 
     this.physics.add.collider(gameState.player, gameState.platforms);
     this.physics.add.collider(gameState.goal, gameState.platforms);
-
-/*  THIS WILL COVER THE POINTS(THE STAR GROUP), WHICH WILL ADD TO THE SCORE
+    
+    gameState.cursors = this.input.keyboard.createCursorKeys();
+      
+      
+    this.createPoints();
+    this.physics.add.collider(gameState.platforms, gameState.points);
+      
+    const getPoint = (pl, po) => {
+      po.destroy();
+      
+      gameState.score += 10;
+      gameState.scoreText.setText(`Score: ${gameState.score}`);
+  }
+    
+    this.physics.add.overlap(gameState.player, gameState.points, getPoint); 
+    
+  }
+    
+    
+  
+    
+  createPoints() {
+    // THIS WILL COVER THE POINTS(THE STAR GROUP), WHICH WILL ADD TO THE SCORE
     //  Finally some stars to collect
     gameState.points = this.physics.add.group();
     //  We will enable physics for any star that is created in this group
     gameState.points.enableBody = true;
     //  Here we'll create 12 of them evenly spaced apart
-    for (var i = 0; i < 12; i++)
+    for (var i = 0; i < 28; i++)
     {
         //  Create a star inside of the 'stars' group
-        var point = gameState.points.create(i * 70, 0, 'points');
+        var point = gameState.points.create(i * 70, 0, 'points').setScale(.05);
         //  Let gravity do its thing
         point.body.gravity.y = 300;
         //  This just gives each star a slightly random bounce value
         point.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
-    this.physics.add.collider(points, platforms);
-    gameState.points.setCollideWorldBounds(true);
-    this.physics.add.collider(points, platforms);
-    
-    */
-
-      
-    gameState.cursors = this.input.keyboard.createCursorKeys();
-    
-    
-    
-
+        
+    }  
   }
 
   createPlatform(xIndex, yIndex) {
