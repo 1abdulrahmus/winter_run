@@ -6,7 +6,11 @@ class Level extends Phaser.Scene {
       'Level1': 'Level2',
       'Level2': 'Level3',
       'Level3': 'Level4',
-      'Level4': 'Credits',
+      'Level4': 'Level5',
+      'Level5': 'Level6',
+      'Level6': 'Level7',
+      'Level7': 'Level8',
+      'Level8': 'Credits',
     }
   }
 
@@ -15,7 +19,7 @@ class Level extends Phaser.Scene {
     this.load.image('snowflake', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/snowflake.png');
     this.load.spritesheet('campfire', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/campfire.png',
       { frameWidth: 32, frameHeight: 32});
-    this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/codey.png', { frameWidth: 72, frameHeight: 90})
+    this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/codey.png', { frameWidth: 72, frameHeight: 90});
 
     this.load.image('bg1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/mountain.png');
     this.load.image('bg2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/trees.png');
@@ -327,7 +331,39 @@ class Level3 extends Level {
 class Level4 extends Level {
   constructor() {
     super('Level4')
-    this.heights = [4, null, 3, 6, null, 6, null, 5, 4];
+    this.heights = [7, 6, null, 5, 6, 4, null, 5, 4];
+    this.weather = 'morning';
+  }
+}
+
+class Level5 extends Level {
+  constructor() {
+    super('Level5')
+    this.heights = [5, 6, null, 6, null, 4, 5, null, 4];
+    this.weather = 'afternoon';
+  }
+}
+
+class Level6 extends Level {
+  constructor() {
+    super('Level6')
+    this.heights = [3, 4, null, 5, null, 6, null, 4, 5];
+    this.weather = 'twilight';
+  }
+}
+
+class Level7 extends Level {
+  constructor() {
+    super('Level7')
+    this.heights = [5, null, 3, null, 6, 7, null, 5, 3];
+    this.weather = 'night';
+  }
+}
+
+class Level8 extends Level {
+  constructor() {
+    super('Level8')
+    this.heights = [6, 4, null, 6, 3, 6, null, 4, 3];
     this.weather = 'morning';
   }
 }
@@ -345,7 +381,8 @@ class Credits extends Phaser.Scene {
   create() {
     gameState.bg3 = this.add.image(0, 0, 'bg3');
     gameState.player = this.add.sprite(config.width / 2, config.height / 2, 'codey_sled');
-    this.add.text( config.width * .25, config.height * .36, 'Thank you for Playing', {fill: '#000000', fontSize: '20px'})
+    this.add.text( config.width * .25, config.height * .36, 'Thank you for Playing', {fill: '#000000', fontSize: '20px'});
+    this.add.text( config.width * .28, config.height * .60, 'Reload to play Again!', {fill: '#40E0D0', fontSize: '15px'});
     this.anims.create({
       key: 'sled',
       frames: this.anims.generateFrameNumbers('codey_sled'),
@@ -443,7 +480,7 @@ const config = {
       enableBody: true,
     }
   },
-  scene: [StartScreen, Level1, Level2, Level3, Level4, Credits]
+  scene: [StartScreen, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8, Credits]
 };
 
 const game = new Phaser.Game(config);
