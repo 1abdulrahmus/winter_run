@@ -26,6 +26,9 @@ class Level extends Phaser.Scene {
     this.load.image('bg3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/snowdunes.png');
     this.load.image('points', '/assets/star.png');
     this.load.audio('theme', '/assets/theme.mp3');
+      
+    // enemy sprite
+    this.load.spritesheet('snowman', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/snowman.png', { frameWidth: 50, frameHeight: 70 });
   }
 
   create() {
@@ -78,10 +81,42 @@ class Level extends Phaser.Scene {
     
     this.physics.add.overlap(gameState.player, gameState.points, getPoint); 
     
-  }
-    
-    
-  
+    gameState.enemy = this.physics.add.sprite(config.width * .7, config.height * .5, 'snowman');
+      
+    this.physics.add.collider(gameState.enemy, gameState.platforms);
+
+    this.anims.create({
+      key: 'snowmanAlert',
+      frames: this.anims.generateFrameNumbers('snowman', { start: 0, end: 3 }),
+      frameRate: 4,
+      repeat: -1
+    });
+
+    gameState.enemy.anims.play('snowmanAlert', true);
+    gameState.enemy.setCollideWorldBounds(true);
+      
+    //handles the tween movement for the enemy sprite
+    gameState.enemy.move = this.tweens.add({
+      targets: gameState.enemy, 
+      x: 320,
+      ease: 'Linear',
+      duration: 1800,
+      repeat: -1,
+      yoyo: true
+      
+    });
+      
+    //handles the contact with player and the enemy
+    this.physics.add.overlap(gameState.player, gameState.enemy, function() {
+      this.cameras.main.shake(240, .01, false, function(camera, progress) {
+          if (progress > .9) {
+            this.scene.restart(this.levelKey);
+          }
+        });
+    }, null, this);
+      
+}
+
     
   createPoints() {
     // THIS WILL COVER THE POINTS(THE STAR GROUP), WHICH WILL ADD TO THE SCORE
@@ -102,6 +137,9 @@ class Level extends Phaser.Scene {
     }  
   }
 
+    
+    
+    
   createPlatform(xIndex, yIndex) {
     // Creates a platform evenly spaced along the two indices.
     // If either is not a number it won't make a platform
@@ -182,6 +220,7 @@ class Level extends Phaser.Scene {
   levelSetup() {
     for (const [xIndex, yIndex] of this.heights.entries()) {
       this.createPlatform(xIndex, yIndex);
+       
     } 
     
     // Create the campfire at the end of the level
@@ -382,7 +421,7 @@ class Credits extends Phaser.Scene {
     gameState.bg3 = this.add.image(0, 0, 'bg3');
     gameState.player = this.add.sprite(config.width / 2, config.height / 2, 'codey_sled');
     this.add.text( config.width * .25, config.height * .36, 'Thank you for Playing', {fill: '#000000', fontSize: '20px'});
-    this.add.text( config.width * .28, config.height * .60, 'Reload to play Again!', {fill: '#40E0D0', fontSize: '15px'});
+    this.add.text( config.width * .28, config.height * .60, 'Reload to play again!', {fill: '#40E0D0', fontSize: '15px'});
     this.anims.create({
       key: 'sled',
       frames: this.anims.generateFrameNumbers('codey_sled'),
