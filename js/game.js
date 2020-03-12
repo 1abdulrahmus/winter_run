@@ -1,7 +1,17 @@
+/*
+    Winter Run is a 2d platformer game that has the player travel through snowy landscapes and listen sound chilling music
+    -Phaser 3 Framework-
+    Sources: Codecademy and Youtube Music
+    Created by: Mustafa Abdulrahman
+
+*/
+
+
 class Level extends Phaser.Scene {
   constructor(key) {
     super({key});
     this.levelKey = key
+    // the nextLevel key signifies to change scene
     this.nextLevel = {
       'Level1': 'Level2',
       'Level2': 'Level3',
@@ -15,6 +25,7 @@ class Level extends Phaser.Scene {
   }
 
   preload() {
+    //loads all the assets for Level class
     this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/platform.png');
     this.load.image('snowflake', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/snowflake.png');
     this.load.spritesheet('campfire', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/campfire.png',
@@ -80,8 +91,9 @@ class Level extends Phaser.Scene {
   }
     
     this.physics.add.overlap(gameState.player, gameState.points, getPoint); 
-    
-    gameState.enemy = this.physics.add.sprite(config.width * .7, config.height * .5, 'snowman');
+    //create random x coord, keeep y coord the same
+    const xCoord = Math.random() * 640;
+    gameState.enemy = this.physics.add.sprite(gameState.goal.x - 75, gameState.goal.y, 'snowman');
       
     this.physics.add.collider(gameState.enemy, gameState.platforms);
 
@@ -98,13 +110,14 @@ class Level extends Phaser.Scene {
     //handles the tween movement for the enemy sprite
     gameState.enemy.move = this.tweens.add({
       targets: gameState.enemy, 
-      x: 320,
+      x: gameState.goal.x - 75,
       ease: 'Linear',
       duration: 1800,
       repeat: -1,
       yoyo: true
       
     });
+    
       
     //handles the contact with player and the enemy
     this.physics.add.overlap(gameState.player, gameState.enemy, function() {
@@ -124,7 +137,7 @@ class Level extends Phaser.Scene {
     gameState.points = this.physics.add.group();
     //  We will enable physics for any star that is created in this group
     gameState.points.enableBody = true;
-    //  Here we'll create 12 of them evenly spaced apart
+    //  Here we'll create 28 of them evenly spaced apart
     for (var i = 0; i < 28; i++)
     {
         //  Create a star inside of the 'stars' group
@@ -164,7 +177,7 @@ class Level extends Phaser.Scene {
 
     gameState.emitter.setScrollFactor(0);
   }
-
+  //creates all the animations
   createAnimations() {
     this.anims.create({
       key: 'run',
