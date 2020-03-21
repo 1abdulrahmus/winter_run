@@ -4,7 +4,7 @@ A Codecademy extension- a 2D platformer developed using the Phaser 3 JS framewor
 
 Here is a link to play the game: https://winter-run.herokuapp.com/
 
-![Winter Run Start Screen](https://s4.aconvert.com/convert/p3r68-cdx67/a67qf-ygpji.png)
+![Winter Run Start Screen](https://i.ibb.co/5hhWNFn/Winter-Run-web-pic.png)
 
 ## Deployment
 
@@ -12,7 +12,7 @@ Clone Repository
 
 Install Dependencies
 
-Run on Live Preview (Using Brackets)
+Run on Live Preview (Using Brackets preferrably)
 
 ## Built With
 
